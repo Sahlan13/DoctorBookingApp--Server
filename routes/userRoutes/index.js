@@ -1,5 +1,5 @@
 import express from "express";
-import Doctor from "../../db/models/doctorSchema.js";
+import User from "../../db/models/userSchema.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -8,8 +8,8 @@ const router = express.Router();
 router.post("/signup", async (req, res) => {
   try {
     const body = { ...req.body };
-    const doctor = await Doctor.findOne({ username: body.username });
-    if (doctor) {
+    const user = await User.findOne({ username: body.username });
+    if (user) {
       return res.status(403).json({ message: "Username Already Exists!" });
     }
     if (body.password !== body.confirmPassword) {
@@ -19,7 +19,7 @@ router.post("/signup", async (req, res) => {
     const hashedPassword = await bcrypt.hash(body.password, 2);
     body.password = hashedPassword;
 
-    await Doctor.create(body);
+    await User.create(body);
 
     return res.status(201).json({ message: "Signup successfull!" });
   } catch (e) {
@@ -30,13 +30,13 @@ router.post("/signup", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const body = { ...req.body };
-    const doctor = await Doctor.findOne({ username: body.username });
-    if (!doctor) {
+    const user = await User.findOne({ username: body.username });
+    if (!user) {
       return res
         .status(403)
         .json({ message: "Username or Password Incorrect!" });
     }
-    const isMatching = await bcrypt.compare(body.password, doctor.password);
+    const isMatching = await bcrypt.compare(body.password, user.password);
 
     if (!isMatching) {
       return res
@@ -45,8 +45,8 @@ router.post("/login", async (req, res) => {
     }
 
     const token = jwt.sign(
-      { role: "DOCTOR", id: doctor._id },
-      process.env.DOCTOR_SECRET_KEY,
+      { role: "USER", id: user._id },
+      process.env.USER_SECRET_KEY,
       {
         expiresIn: "7d",
       }
