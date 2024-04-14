@@ -2,6 +2,7 @@ import express from "express";
 import Doctor from "../../db/models/doctorSchema.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import mongoose, { Types } from "mongoose";
 
 const router = express.Router();
 
@@ -46,7 +47,7 @@ router.post("/login", async (req, res) => {
 
     const token = jwt.sign(
       { role: "DOCTOR", id: doctor._id },
-      process.env.DOCTOR_SECRET_KEY,
+      process.env.SECRET_KEY,
       {
         expiresIn: "7d",
       }
@@ -58,6 +59,38 @@ router.post("/login", async (req, res) => {
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
+});
+
+//get doctor details by id
+router.get("/profile/:id", async (req, res) => {
+  const { id } = req.params;
+  // const doctor = await Doctor.findById(id).populate("department");
+  const doctor = await Doctor.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(id),
+      },
+    },
+    {
+      $lookup: {
+        localField: "department",
+        from: "departments",
+        foreignField: "_id",
+        as: "departmentDetails",
+      },
+    },
+    {
+      $project: {
+        name: 1,
+        username: 1,
+        image: 1,
+        specialization: 1,
+        departmentDetails: 1,
+      },
+    },
+  ]);
+
+  res.status(200).json(doctor);
 });
 
 export default router;
