@@ -6,7 +6,7 @@ import userRoutes from "./userRoutes/index.js";
 import slotRoutes from "./slotRoutes/index.js";
 import prescriptionRoutes from "./prescriptionRoutes/index.js";
 import appointmentRoutes from "./appointmentRoutes/index.js";
-import pharmacyRoutes from "./prescriptionRoutes/index.js";
+import pharmacyRoutes from "./pharmacyRoutes/index.js";
 
 const router = express.Router();
 
