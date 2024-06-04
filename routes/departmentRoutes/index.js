@@ -6,14 +6,26 @@ import Doctor from "../../db/models/doctorSchema.js";
 const router = express.Router();
 
 //add department
-router.post("/", checkToken("DOCTOR"), async (req, res) => {
+router.post("/", async (req, res) => {
   const body = { ...req.body };
+
+  // Check if a department with the same name already exists
+  const existingDepartment = await Department.findOne({ name: body.name });
+
+  // If a department with the same name exists, return an error
+  if (existingDepartment) {
+    return res
+      .status(400)
+      .json({ error: "Department with this name already exists" });
+  }
+
+  // Create the department
   await Department.create(body);
   res.status(201).json({ message: "Department added successfully!" });
 });
 
 //list departments
-router.get("/", checkToken(["DOCTOR", "USER"]), async (req, res) => {
+router.get("/", async (req, res) => {
   const departments = await Department.find();
   res.status(200).json(departments);
 });

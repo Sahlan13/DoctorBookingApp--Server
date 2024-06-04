@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div
+      style="
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-evenly;
+        border-radius: 25px;
+        border: 3px solid rgba(50, 177, 192, 0.7);
+        width: 500px;
+        height: 500px;
+        margin: auto;
+        padding: 50px;
+      "
+    >
+      <h1 style="text-align: center; color: rgba(50, 177, 192, 0.7)">
+        Appointment Token
+      </h1>
+      <h3>Name:<%= appointment.user.name %></h3>
+      <h3>E-mail:<%= appointment.user.email %></h3>
+      <h3>Doctor:<%= appointment.doctor.name %></h3>
+      <h3>
+        Slot:<%= appointment.slot.startTime %>-<%= appointment.slot.endTime %>
+      </h3>
+    </div>
+  </body>
+</html>

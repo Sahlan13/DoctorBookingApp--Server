@@ -17,11 +17,11 @@ router.get("/", checkToken(["DOCTOR", "USER"]), async (req, res) => {
   res.status(200).json(medicines);
 });
 
-// //list doctors by department id
-// router.get("/doctor/:id", checkToken(["USER"]), async (req, res) => {
-//   const { id } = req.params;
-//   const doctors = await Doctor.find({ department: id });
-//   res.status(200).json(doctors);
-// });
+// //list pharmacy by  id
+router.get("/:id", checkToken(["DOCTOR", "USER"]), async (req, res) => {
+  const { id } = req.params;
+  const medicine = await Pharmacy.findById(id);
+  res.status(200).json(medicine);
+});
 
 export default router;

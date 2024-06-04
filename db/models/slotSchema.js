@@ -4,6 +4,7 @@ const slotSchema = Schema({
   doctor: {
     type: Schema.Types.ObjectId,
     ref: "Doctor",
+    required: true,
   },
   startTime: {
     type: String,

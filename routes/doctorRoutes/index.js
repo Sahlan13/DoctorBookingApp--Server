@@ -2,6 +2,7 @@ import express from "express";
 import Doctor from "../../db/models/doctorSchema.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import checkToken from "../../middlewares/checkToken.js";
 import mongoose, { Types } from "mongoose";
 
 const router = express.Router();
@@ -62,10 +63,10 @@ router.post("/login", async (req, res) => {
 });
 
 //get doctor details by id
-router.get("/profile/:id", async (req, res) => {
+router.get("/profile/:id", checkToken(["DOCTOR", "USER"]), async (req, res) => {
   const { id } = req.params;
   // const doctor = await Doctor.findById(id).populate("department");
-  const doctor = await Doctor.aggregate([
+  const [doctor] = await Doctor.aggregate([
     {
       $match: {
         _id: new mongoose.Types.ObjectId(id),
@@ -91,6 +92,12 @@ router.get("/profile/:id", async (req, res) => {
   ]);
 
   res.status(200).json(doctor);
+});
+
+//list doctors
+router.get("/", async (req, res) => {
+  const doctors = await Doctor.find();
+  res.status(200).json(doctors);
 });
 
 export default router;
